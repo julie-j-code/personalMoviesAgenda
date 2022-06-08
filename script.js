@@ -45,7 +45,7 @@ function addMovie(e) {
     year: Number(year),
     duration,
     genres,
-    date: new Date(selectedDate.date),
+    date: new Date(selectedDate),
   };
   console.log(newMovie);
   saveMovie(newMovie);
