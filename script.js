@@ -27,11 +27,11 @@ const calendar = new VanillaCalendar({
   },
 });
 
-let selectedDate = {};
-
+const movieList = document.querySelector("#movie-list");
 // soumission du  formulaire
 const movieForm = document.querySelector("#movie-form");
 movieForm.addEventListener("submit", addMovie);
+
 
 function addMovie(e) {
   e.preventDefault();
@@ -67,31 +67,57 @@ function saveMovie(movie) {
 function displayMovie(date) {
   let movies = JSON.parse(localStorage.getItem("movies")) || [];
   console.log(movies);
-  let movie = movies.filter((movie) => {
+  const moviesAtThisDate = movies.filter((movie) => {
     // console.log("date", date.split("T")[0]);
     // console.log("movie-date", movie.date);
     return movie.date === date.split("T")[0];
   });
 
-  console.log("resultat", movie);
+  console.log("resultat", moviesAtThisDate);
 
-  if (movie) {
-    let movieList = document.querySelector("#movie-list");
+  if (moviesAtThisDate.length === 1) {
+    const movie = moviesAtThisDate[0];
+    // let movieList = document.querySelector("#movie-list");
     movieList.innerHTML = `
       <div class="movie-item">
       <h3>${movie.title}</h3>
-      <span>année : ${movie.year}</span>
+      <span>année : ${movie.year}</span>                                                                                                                                                                                              
       <span>durée : ${movie.duration}</span>
       <span>genre : ${movie.genres}</span>
       </div>
       `;
+  } else if (moviesAtThisDate.length > 1) {
+    displayMovies(moviesAtThisDate);
   } else {
-    let movieList = document.querySelector("#movie-list");
     movieList.innerHTML = `
-      <div class="movie-item">
-      <h3>Aucun film prévu ce jour là</h3>
-      Vous pouvez ajouter un film grâce au formulaire ci-dessous.
-      </div>
-      `;
+        <div class="movie-item">
+        <h3>Aucun film prévu ce jour là</h3>
+        Vous pouvez ajouter un film grâce au formulaire ci-dessous.
+        </div>
+        `;
   }
+}
+
+
+// putain de mdr de complication !!!
+function displayMovies(movies) {
+  let content = [];
+  movies.forEach((movie) => {
+
+console.log("titre du film", movie.title);
+
+    const singleMovieHTML = `
+        <div class="movie-item">
+            <h3>${movie.title}</h3>
+            <span>année : ${movie.year}</span>
+            <span>durée : ${movie.duration}</span>
+            <span>genre : ${movie.genres.join(", ")}</span>
+            </div>
+            `;
+    content = [...content, singleMovieHTML];
+  });
+
+  console.log(content);
+
+  movieList.innerHTML = content.join("");
 }
